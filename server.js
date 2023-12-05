@@ -8,21 +8,17 @@ compiler.init(options);
 
 app.use(bodyP.json());
 app.use("/style.css",express.static("C:/Users/vanda/Desktop/SAUMYA/PROJECT/style.css"));
-app.use("/script.js",express.static("C:/Users/vanda/Desktop/SAUMYA/PROJECT/script.js"));
+// app.use("/script.js",express.static("C:/Users/vanda/Desktop/SAUMYA/PROJECT/script.js"));
 app.use("/codemirror-5.65.16",express.static("C:/Users/vanda/Desktop/SAUMYA/PROJECT/codemirror-5.65.16"));
 
 const port = 80;
-
-app.use("/",(req, res)=>{
-    res.sendFile("C:/Users/vanda/Desktop/SAUMYA/PROJECT/index.html");
-})
 
 app.post("/compile",function (req, res){
     var code = req.body.code;
     var input = req.body.input;
     var lang = req.body.lang;
     try{
-        if(lang = "C++"){
+        if(lang === "C++"){
             if(!input){
                 var envData = { OS : "windows" , cmd : "g++" , options : {timeout : 10000}}; // (uses g++ command to compile )
                 compiler.compileCPP(envData , code , function (data) {
@@ -46,7 +42,7 @@ app.post("/compile",function (req, res){
                 });
             }
         }
-        else if(lang = "Java"){
+        else if(lang === "Java"){
             if(!input){
                 var envData = { OS : "windows"}; 
                 compiler.compileJava( envData , code , function(data){
@@ -70,7 +66,7 @@ app.post("/compile",function (req, res){
                 });
             }
         }
-        else if(lang = "Python"){
+        else if(lang === "Python"){
             if(!input){
                 var envData = { OS : "windows"}; 
                 compiler.compilePython( envData , code , function(data){
@@ -96,13 +92,12 @@ app.post("/compile",function (req, res){
         }
     }
     catch(e){
-        console.log("ERROR");
-    }
-    //if windows  
-    var envData = { OS : "windows"}; 
-    compiler.compilePython( envData , code , function(data){
-         res.send(data);
-    });    
+        console.log("ERROR", e);
+    }   
+})
+
+app.use("/",(req, res)=>{
+    res.sendFile("C:/Users/vanda/Desktop/SAUMYA/PROJECT/index.html");
 })
 
 app.listen(port,()=>{
